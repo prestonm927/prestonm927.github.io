@@ -1,13 +1,30 @@
-<style>
-  html, body {
-    height: 100%;
-    margin: 0;
-  }
+title{
+  color:    white;
+  position: absolute;
+}
+  
+html, body {
+  height: 100%;
+  margin: 0;
+}
 
-  body {
-    background: black;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-</style>
+body {
+  background:      black;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+}
+
+h1{
+  color:    red;
+  position: absolute;
+  top:      0;
+  left:     0;
+}
+
+h2{
+  color:    blue;
+  position: absolute;
+  top:      0;
+  left:     0;
+}
