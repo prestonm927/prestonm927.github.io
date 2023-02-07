@@ -1,11 +1,14 @@
-const canvas = document.getElementById('game');
-const context = canvas.getContext('2d');
-const grid = 15;
+const canvas       = document.getElementById('game');
+const context      = canvas.getContext('2d');
+const grid         = 15;
 const paddleHeight = grid * 5; // 80
-const maxPaddleY = canvas.height - grid - paddleHeight;
+const maxPaddleY   = canvas.height - grid - paddleHeight;
+
+var playerOneScore = 0;
+var playerTwoScore = 0;
 
 var paddleSpeed = 6;
-var ballSpeed = 5;
+var ballSpeed   = 5;
 
 const leftPaddle = {
   // start in the middle of the game on the left side
@@ -57,7 +60,7 @@ function loop() {
   context.clearRect(0,0,canvas.width,canvas.height);
 
   // move paddles by their velocity
-  leftPaddle.y += leftPaddle.dy;
+  leftPaddle.y  += leftPaddle.dy;
   rightPaddle.y += rightPaddle.dy;
 
   // prevent paddles from going through walls
@@ -86,11 +89,11 @@ function loop() {
 
   // prevent ball from going through walls by changing its velocity
   if (ball.y < grid) {
-    ball.y = grid;
+    ball.y   = grid;
     ball.dy *= -1;
   }
   else if (ball.y + grid > canvas.height - grid) {
-    ball.y = canvas.height - grid * 2;
+    ball.y   = canvas.height - grid * 2;
     ball.dy *= -1;
   }
 
