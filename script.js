@@ -4,6 +4,7 @@ const grid         = 15;
 const paddleHeight = grid * 5; // 80
 const maxPaddleY   = canvas.height - grid - paddleHeight;
 
+// score for Player One (left) and Player Two (right)
 var playerOneScore = 0;
 var playerTwoScore = 0;
 
@@ -98,8 +99,20 @@ function loop() {
   }
 
   // reset ball if it goes past paddle (but only if we haven't already done so)
-  if ( (ball.x < 0 || ball.x > canvas.width) && !ball.resetting) {
+  if ((ball.x < 0 || ball.x > canvas.width) && !ball.resetting) {
     ball.resetting = true;
+    
+    // ball goes off screen to the right -> Player One scored
+    if (ball.x < 0) {
+      ++playerOneScore;
+    }
+    // ball goes off screen to the left -> Player Two scored
+    else if (ball.x > canvas.width) {
+      ++playerTwoScore;
+    }
+    // implement score to HTML
+    document.getElementById("playerOneScore").innerHTML = playerOneScore;
+    document.getElementById("playerTwoScore").innerHTML = playerTwoScore;
 
     // give some time for the player to recover before launching the ball again
     setTimeout(() => {
