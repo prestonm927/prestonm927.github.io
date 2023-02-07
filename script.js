@@ -103,16 +103,16 @@ function loop() {
     ball.resetting = true;
     
     // ball goes off screen to the right -> Player One scored
-    if (ball.x < 0) {
+    if (ball.x > canvas.width) {
       ++playerOneScore;
     }
     // ball goes off screen to the left -> Player Two scored
-    else if (ball.x > canvas.width) {
+    else if (ball.x < 0) {
       ++playerTwoScore;
     }
     // implement score to HTML
-    document.getElementById("playerOneScore").innerHTML = playerOneScore;
-    document.getElementById("playerTwoScore").innerHTML = playerTwoScore;
+    document.getElementById("playerOneScore").innerHTML = "Player 1 Score: " + playerOneScore;
+    document.getElementById("playerTwoScore").innerHTML = "Player 2 Score: " + playerTwoScore;
 
     // give some time for the player to recover before launching the ball again
     setTimeout(() => {
