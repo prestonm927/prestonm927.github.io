@@ -3,6 +3,8 @@ const context      = canvas.getContext('2d');
 const grid         = 15;
 const paddleHeight = grid * 5; // 80
 const maxPaddleY   = canvas.height - grid - paddleHeight;
+const gameOverScreen = document.getElementById('gameOver');
+const gameContainer = document.getElementById("gameContainer")
 
 // score for Player One (left) and Player Two (right)
 var playerOneScore = 0;
@@ -15,6 +17,9 @@ var aiBasePaddleDelay = 50;
 var aiRefeshThreshold = 20;
 var aiPaddleDelay = 0;
 var aiTarget = 0;
+
+var gameOver = false;
+var gameOverDisplayed = false;
 
 const leftPaddle = {
   // start in the middle of the game on the left side
@@ -111,10 +116,31 @@ function aiPaddleMove() {
   }
 }
 
+function showGameOver(){
+  gameOverScreen.style.visibility = "visible";
+  gameContainer.style.visibility = "hidden";
+}
+
+function hideGameOver(){
+  gameOverScreen.visibility = "hidden";
+  gameContainer.style.visibility = "visible";
+}
+
+function restartButtonFunction(){
+  location.reload();
+}
+
 // game loop
 function loop(timestamp) {
   requestAnimationFrame(loop);
   context.clearRect(0,0,canvas.width,canvas.height);
+
+  if (gameOver) {
+    if (!gameOverDisplayed) {
+      showGameOver();
+      gameOverDisplayed = true;
+    }
+  }
 
   aiPaddleMove();
 
@@ -209,6 +235,10 @@ function loop(timestamp) {
   // draw dotted line down the middle
   for (let i = grid; i < canvas.height - grid; i += grid * 2) {
     context.fillRect(canvas.width / 2 - grid / 2, i, grid, grid);
+  }
+
+  if (playerOneScore >= 7 || playerTwoScore >= 7){
+    gameOver = true;
   }
 }
 
