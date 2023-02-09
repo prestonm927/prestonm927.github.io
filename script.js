@@ -11,7 +11,7 @@ var playerTwoScore = 0;
 var paddleSpeed = 6;
 var ballSpeed   = 5;
 
-var aiBasePaddleDelay = 2;
+var aiBasePaddleDelay = 50;
 var aiRefeshThreshold = 20;
 var aiPaddleDelay = 0;
 var aiTarget = 0;
@@ -94,7 +94,9 @@ function aiPaddleMove() {
   let aiPaddleSpeed = 5
 
   let targetDistance = leftPaddle.y - aiTarget;
-  let scalarDistance = Math.abs(targetDistance)
+  let scalarDistance = Math.abs(targetDistance);
+
+  leftPaddle.dy = 0;
 
   if (scalarDistance > paddleSpeed) {
     // paddle is above ball
@@ -105,7 +107,7 @@ function aiPaddleMove() {
       leftPaddle.dy = aiPaddleSpeed;
     }
   } else {
-    leftPaddle.dy = scalarDistance;
+    // leftPaddle.dy = scalarDistance;
   }
 }
 
