@@ -12,6 +12,7 @@ var paddleSpeed = 6;
 var ballSpeed   = 5;
 
 var aiBasePaddleDelay = 2;
+var aiRefeshThreshold = 20;
 var aiPaddleDelay = 0;
 var aiTarget = 0;
 
@@ -74,17 +75,23 @@ function aiPaddleMove() {
 
   aiPaddleDelay--;
 
+  let targetDelta = aiTarget - ball.y;
+
   console.log({
     aiTarget,
     "ballPos": ball.y,
-    "targetDelta": aiTarget - ball.y
-  })
+    "targetDelta": targetDelta
+  });
 
   if (aiPaddleDelay <= 0) {
     refreshTarget();
   }
 
-  let aiPaddleSpeed = 4
+  if (Math.abs(targetDelta) >= aiRefeshThreshold) {
+    refreshTarget();
+  }
+
+  let aiPaddleSpeed = 5
 
   let targetDistance = leftPaddle.y - aiTarget;
   let scalarDistance = Math.abs(targetDistance)
@@ -98,7 +105,7 @@ function aiPaddleMove() {
       leftPaddle.dy = aiPaddleSpeed;
     }
   } else {
-    dy = scalarDistance;
+    leftPaddle.dy = scalarDistance;
   }
 }
 
