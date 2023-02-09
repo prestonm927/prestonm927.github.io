@@ -34,3 +34,8 @@ h2{
 #gameContainer {
   visibility: visible;
 }
+
+#winnerText {
+  color: white;
+  text-align: center;
+}

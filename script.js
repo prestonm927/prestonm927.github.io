@@ -267,6 +267,12 @@ function loop(timestamp) {
   }
 
   if (playerOneScore >= 7 || playerTwoScore >= 7){
+
+    if (playerOneScore > playerTwoScore) {
+      document.getElementById("winnerText").innerText = "YOU LOSE";
+    } else {
+      document.getElementById("winnerText").innerText = "YOU WIN"
+    }
     gameOver = true;
   }
 }
