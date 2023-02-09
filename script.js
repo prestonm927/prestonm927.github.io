@@ -3,6 +3,7 @@ const context      = canvas.getContext('2d');
 const grid         = 15;
 const paddleHeight = grid * 5; // 80
 const maxPaddleY   = canvas.height - grid - paddleHeight;
+const baseBallSpeed = 5;
 const gameOverScreen = document.getElementById('gameOver');
 const gameContainer = document.getElementById("gameContainer")
 
@@ -11,9 +12,11 @@ var playerOneScore = 0;
 var playerTwoScore = 0;
 
 var paddleSpeed = 6;
-var ballSpeed   = 5;
+var ballSpeed   = baseBallSpeed;
 
-var aiBasePaddleDelay = 50;
+var ballTier = 0;
+
+var aiBasePaddleDelay = 40;
 var aiRefeshThreshold = 20;
 var aiPaddleDelay = 0;
 var aiTarget = 0;
@@ -92,11 +95,12 @@ function aiPaddleMove() {
     refreshTarget();
   }
 
+  // if the ball gets to far away from the target, refresh
   if (Math.abs(targetDelta) >= aiRefeshThreshold) {
     refreshTarget();
   }
 
-  let aiPaddleSpeed = 5
+  let aiPaddleSpeed = 7
 
   let targetDistance = leftPaddle.y - aiTarget;
   let scalarDistance = Math.abs(targetDistance);
@@ -189,16 +193,20 @@ function loop(timestamp) {
     // ball goes off screen to the right -> Player One scored
     if (ball.x > canvas.width) {
       ++playerOneScore;
+      ball.dx = baseBallSpeed;
     }
     // ball goes off screen to the left -> Player Two scored
     else if (ball.x < 0) {
       ++playerTwoScore;
+      ball.dx = -baseBallSpeed;
     }
     // implement score to HTML
     document.getElementById("playerOneScore").innerHTML = "Player 1 Score: " + playerOneScore;
     document.getElementById("playerTwoScore").innerHTML = "Player 2 Score: " + playerTwoScore;
 
     leftPaddle.y = canvas.height / 2 - paddleHeight / 2;
+
+    ballTier = 0;
 
     // give some time for the player to recover before launching the ball again
     setTimeout(() => {
@@ -208,23 +216,44 @@ function loop(timestamp) {
     }, 400);
   }
 
+  let ballSpeedIncrease = 1;
+  let paddleHit = false;
+
   // check to see if ball collides with paddle. if they do change x velocity
   if (collides(ball, leftPaddle)) {
+    // speed up ball, going left
+    ball.dx -= ballSpeedIncrease;
+
     ball.dx *= -1;
 
     // move ball next to the paddle otherwise the collision will happen again
     // in the next frame
     ball.x = leftPaddle.x + leftPaddle.width;
+    paddleHit = true;
   }
   else if (collides(ball, rightPaddle)) {
+    // speed up ball, going right
+    ball.dx += ballSpeedIncrease;
+
     ball.dx *= -1;
 
     // move ball next to the paddle otherwise the collision will happen again
     // in the next frame
     ball.x = rightPaddle.x - ball.width;
+    paddleHit = true;
+  }
+
+  if (paddleHit) {
+    ballTier++;
   }
 
   // draw ball
+  if (ballTier <= 3) {
+    context.fillStyle = 'white';
+  } else {
+    context.fillStyle = 'red';
+  }
+
   context.fillRect(ball.x, ball.y, ball.width, ball.height);
 
   // draw walls
