@@ -11,6 +11,10 @@ var playerTwoScore = 0;
 var paddleSpeed = 6;
 var ballSpeed   = 5;
 
+var aiBasePaddleDelay = 2;
+var aiPaddleDelay = 0;
+var aiTarget = 0;
+
 const leftPaddle = {
   // start in the middle of the game on the left side
   x: grid * 2,
@@ -55,10 +59,55 @@ function collides(obj1, obj2) {
          obj1.y + obj1.height > obj2.y;
 }
 
+function refreshTarget() {
+  aiTarget = ball.y;
+  aiPaddleDelay = aiBasePaddleDelay + Math.floor(Math.random() * 5);
+
+  console.log(`Updating Target: ${aiTarget}`);
+}
+
+function aiPaddleMove() {
+  if (ball.resetting) {
+    leftPaddle.dy = 0;
+    return;
+  }
+
+  aiPaddleDelay--;
+
+  console.log({
+    aiTarget,
+    "ballPos": ball.y,
+    "targetDelta": aiTarget - ball.y
+  })
+
+  if (aiPaddleDelay <= 0) {
+    refreshTarget();
+  }
+
+  let aiPaddleSpeed = 4
+
+  let targetDistance = leftPaddle.y - aiTarget;
+  let scalarDistance = Math.abs(targetDistance)
+
+  if (scalarDistance > paddleSpeed) {
+    // paddle is above ball
+    if (targetDistance > 0) {
+      leftPaddle.dy = -aiPaddleSpeed;
+    // paddle is below ball
+    } else if (targetDistance < 0) {
+      leftPaddle.dy = aiPaddleSpeed;
+    }
+  } else {
+    dy = scalarDistance;
+  }
+}
+
 // game loop
-function loop() {
+function loop(timestamp) {
   requestAnimationFrame(loop);
   context.clearRect(0,0,canvas.width,canvas.height);
+
+  aiPaddleMove();
 
   // move paddles by their velocity
   leftPaddle.y  += leftPaddle.dy;
@@ -113,6 +162,8 @@ function loop() {
     // implement score to HTML
     document.getElementById("playerOneScore").innerHTML = "Player 1 Score: " + playerOneScore;
     document.getElementById("playerTwoScore").innerHTML = "Player 2 Score: " + playerTwoScore;
+
+    leftPaddle.y = canvas.height / 2 - paddleHeight / 2;
 
     // give some time for the player to recover before launching the ball again
     setTimeout(() => {
