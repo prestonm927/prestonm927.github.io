@@ -16,10 +16,11 @@ var ballSpeed   = baseBallSpeed;
 
 var ballTier = 0;
 
-var aiBasePaddleDelay = 40;
+var aiBasePaddleDelay = 10;
 var aiRefeshThreshold = 20;
 var aiPaddleDelay = 0;
 var aiTarget = 0;
+var aiPaddleSpeed = 7
 
 var gameOver = false;
 var gameOverDisplayed = false;
@@ -72,7 +73,7 @@ function refreshTarget() {
   aiTarget = ball.y;
   aiPaddleDelay = aiBasePaddleDelay + Math.floor(Math.random() * 5);
 
-  console.log(`Updating Target: ${aiTarget}`);
+  // console.log(`Updating Target: ${aiTarget}`);
 }
 
 function aiPaddleMove() {
@@ -81,7 +82,12 @@ function aiPaddleMove() {
     return;
   }
 
-  aiPaddleDelay--;
+  if (playerTwoScore > 5) {
+    aiTarget = ball.y;
+  } else {
+    aiPaddleDelay--;
+  }
+  
 
   let targetDelta = aiTarget - ball.y;
 
@@ -100,20 +106,24 @@ function aiPaddleMove() {
     refreshTarget();
   }
 
-  let aiPaddleSpeed = 7
-
   let targetDistance = leftPaddle.y - aiTarget;
   let scalarDistance = Math.abs(targetDistance);
 
   leftPaddle.dy = 0;
 
-  if (scalarDistance > paddleSpeed) {
+  let cappedSpeed = Math.min(aiPaddleSpeed, ballSpeed);
+
+  let close = scalarDistance <= (paddleHeight / 2);
+
+  // console.log(close);
+
+  if (scalarDistance > cappedSpeed) {
     // paddle is above ball
     if (targetDistance > 0) {
-      leftPaddle.dy = -aiPaddleSpeed;
+      leftPaddle.dy = -cappedSpeed;
     // paddle is below ball
     } else if (targetDistance < 0) {
-      leftPaddle.dy = aiPaddleSpeed;
+      leftPaddle.dy = cappedSpeed;
     }
   } else {
     // leftPaddle.dy = scalarDistance;
@@ -144,6 +154,8 @@ function loop(timestamp) {
       showGameOver();
       gameOverDisplayed = true;
     }
+
+    return;
   }
 
   aiPaddleMove();
@@ -199,6 +211,11 @@ function loop(timestamp) {
     else if (ball.x < 0) {
       ++playerTwoScore;
       ball.dx = -baseBallSpeed;
+
+      // increase speed as player score gets higher
+      if (playerTwoScore % 2 === 1) {
+        aiPaddleSpeed += 1;
+      }
     }
     // implement score to HTML
     document.getElementById("playerOneScore").innerHTML = "Player 1 Score: " + playerOneScore;
@@ -245,6 +262,7 @@ function loop(timestamp) {
 
   if (paddleHit) {
     ballTier++;
+    ballSpeed++;
   }
 
   // draw ball
