@@ -16,11 +16,9 @@ var ballSpeed   = baseBallSpeed;
 
 var ballTier = 0;
 
-var aiBasePaddleDelay = 10;
 var aiRefeshThreshold = 20;
-var aiPaddleDelay = 0;
 var aiTarget = 0;
-var aiPaddleSpeed = 7
+var aiPaddleSpeed = 4
 
 var gameOver = false;
 var gameOverDisplayed = false;
@@ -71,9 +69,6 @@ function collides(obj1, obj2) {
 
 function refreshTarget() {
   aiTarget = ball.y;
-  aiPaddleDelay = aiBasePaddleDelay + Math.floor(Math.random() * 5);
-
-  // console.log(`Updating Target: ${aiTarget}`);
 }
 
 function aiPaddleMove() {
@@ -81,13 +76,6 @@ function aiPaddleMove() {
     leftPaddle.dy = 0;
     return;
   }
-
-  if (playerTwoScore > 5) {
-    aiTarget = ball.y;
-  } else {
-    aiPaddleDelay--;
-  }
-  
 
   let targetDelta = aiTarget - ball.y;
 
@@ -97,12 +85,8 @@ function aiPaddleMove() {
     "targetDelta": targetDelta
   });
 
-  if (aiPaddleDelay <= 0) {
-    refreshTarget();
-  }
-
   // if the ball gets to far away from the target, refresh
-  if (Math.abs(targetDelta) >= aiRefeshThreshold) {
+  if (Math.abs(targetDelta) >= aiRefeshThreshold || playerTwoScore > 6) {
     refreshTarget();
   }
 
@@ -111,11 +95,7 @@ function aiPaddleMove() {
 
   leftPaddle.dy = 0;
 
-  let cappedSpeed = Math.min(aiPaddleSpeed, ballSpeed);
-
-  let close = scalarDistance <= (paddleHeight / 2);
-
-  // console.log(close);
+  let cappedSpeed = Math.min(aiPaddleSpeed, ballSpeed - 2);
 
   if (scalarDistance > cappedSpeed) {
     // paddle is above ball
@@ -215,6 +195,11 @@ function loop(timestamp) {
       // increase speed as player score gets higher
       if (playerTwoScore % 2 === 1) {
         aiPaddleSpeed += 1;
+      }
+
+      // ai becomes more accurate as player score increases
+      if (playerTwoScore > 5) {
+        aiRefeshThreshold = 10;
       }
     }
     // implement score to HTML
