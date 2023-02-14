@@ -6,13 +6,21 @@
   <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <div>
-    <h1 id="playerOneScore">Player 1 Score: 0</h1>
-    <h2 id="playerTwoScore">Player 2 Score: 0</h2>
+  <div id="gameContainer">
+    <div>
+      <h1 id="playerOneScore">Player 1 Score: 0</h1>
+      <h2 id="playerTwoScore">Player 2 Score: 0</h2>
+    </div>
+    <div>
+      <canvas width="750" height="585" id="game"></canvas>
+    </div>
   </div>
-  <div>
-    <canvas width="750" height="585" id="game"></canvas>
+  <div id="gameOver">
+    <h1>GAME OVER</h1>
+    <h3 id="winnerText">YOU </h3>
+    <button onclick="restartButtonFunction()">Restart</button>
   </div>
+  
   <script type="text/javascript" src="script.js">
     requestAnimationFrame(loop);
   </script>
